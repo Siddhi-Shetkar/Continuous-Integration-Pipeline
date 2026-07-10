@@ -1,22 +1,22 @@
-import { useEffect } from 'react';
-import { GameProvider, useGame } from './context/GameContext';
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { GameCard } from './components/GameCard';
-import { ScoreBoard } from './components/ScoreBoard';
-import { EndScreen } from './components/EndScreen';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react'
+import { GameProvider, useGame } from './context/GameContext'
+import { Navbar } from './components/Navbar'
+import { Hero } from './components/Hero'
+import { GameCard } from './components/GameCard'
+import { ScoreBoard } from './components/ScoreBoard'
+import { EndScreen } from './components/EndScreen'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const GameContent = () => {
-  const { gameState, settings } = useGame();
+  const { gameState, settings } = useGame()
 
   useEffect(() => {
     if (settings.darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add('dark')
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove('dark')
     }
-  }, [settings.darkMode]);
+  }, [settings.darkMode])
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden font-sans selection:bg-primary/30">
@@ -28,24 +28,42 @@ const GameContent = () => {
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar />
-        
+
         <main className="flex-grow flex items-center justify-center p-4 sm:p-8">
           <AnimatePresence mode="wait">
             {gameState === 'start' && (
-              <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -20 }} className="w-full">
+              <motion.div
+                key="start"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="w-full"
+              >
                 <Hero />
               </motion.div>
             )}
 
             {(gameState === 'playing' || gameState === 'revealed') && (
-              <motion.div key="playing" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="w-full max-w-5xl mx-auto">
+              <motion.div
+                key="playing"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-full max-w-5xl mx-auto"
+              >
                 <ScoreBoard />
                 <GameCard />
               </motion.div>
             )}
 
             {gameState === 'end' && (
-              <motion.div key="end" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="w-full">
+              <motion.div
+                key="end"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="w-full"
+              >
                 <EndScreen />
               </motion.div>
             )}
@@ -53,15 +71,15 @@ const GameContent = () => {
         </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
 function App() {
   return (
     <GameProvider>
       <GameContent />
     </GameProvider>
-  );
+  )
 }
 
-export default App;
+export default App

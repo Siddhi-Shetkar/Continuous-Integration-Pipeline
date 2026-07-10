@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-build:
+    name: Validate and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        id: install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Linting
+        id: lint
+        run: npm run lint
+
+      - name: Code Formatting
+        id: format
+        run: npm run format:check
+
+      - name: Testing
+        id: test
+        run: npm run coverage
+
+      - name: Build Application
+        id: build
+        run: npm run build
+
+      - name: Documentation Validation
+        id: docs
+        run: |
+          if [ ! -f README.md ]; then echo "README.md is missing"; exit 1; fi
+          if [ ! -f LICENSE ]; then echo "LICENSE is missing"; exit 1; fi
+          # Optionally run markdown-link-check
+          npx markdown-link-check README.md || true
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+
+      - name: Upload Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: Workflow Summary
+        if: always()
+        run: |
+          echo "## CI/CD Pipeline Summary 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "- Install Status: ${{ steps.install.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint Status: ${{ steps.lint.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Format Status: ${{ steps.format.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Status: ${{ steps.test.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Status: ${{ steps.build.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY

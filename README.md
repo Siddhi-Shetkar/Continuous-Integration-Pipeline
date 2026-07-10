@@ -1,142 +1,121 @@
-# AI vs Human Challenge 🎯
+# Continuous Integration Pipeline Challenge 🚀
 
-An interactive web-based game where players determine whether a piece of content was created by a **Human** or an **Artificial Intelligence**. Test your instincts across multiple content types including text, images, code snippets, artwork, and voice clips while competing for the highest score.
+[![CI](https://github.com/USERNAME/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/REPO/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/USERNAME/REPO/actions/workflows/codeql.yml/badge.svg)](https://github.com/USERNAME/REPO/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 Features
+## Project Overview
 
-- 🧠 Guess whether content is AI-generated or human-created
-- 🖼️ Multiple content types:
-  - Images
-  - Text
-  - Code Snippets
-  - Artwork
-  - Voice Clips
-- 🎲 Randomized, non-repeating questions each game
-- 📈 Real-time scoring system
-- 🔥 Accuracy and streak tracking
-- ⏱️ Round timer
-- 🏆 Local leaderboard
-- 📊 End-game statistics
-- 💡 Detailed explanation after every answer
-- 🌙 Dark/Light mode
-- 📱 Fully responsive design
-- 🚪 Exit game with confirmation dialog
+This repository demonstrates a fully functional, production-ready Continuous Integration and Deployment (CI/CD) pipeline built with GitHub Actions for a React/Vite/TypeScript application. It automatically enforces strict code quality, runs robust testing, performs extensive security scanning, and builds the software—making sure no broken or insecure code is ever deployed.
 
-## 🛠️ Tech Stack
+## Challenge Objective
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- Lucide React
-- LocalStorage
+The goal of this challenge was to build a highly modular, secure, and robust CI pipeline that automatically validates the codebase. The repository must:
 
-## 📂 Project Structure
+- Pass all GitHub Actions workflows
+- Build and run tests successfully
+- Pass ESLint and Prettier formatting checks
+- Perform security scanning with zero critical/high vulnerabilities
+- Be 100% submission-ready without manual fixes
 
-```
-src/
-│── assets/
-│── components/
-│── data/
-│── hooks/
-│── pages/
-│── context/
-│── types/
-│── utils/
-│── App.tsx
-│── main.tsx
-```
+## Features
 
-## ⚙️ Installation
+- **Automated Validation:** Linting, formatting, and unit tests run on every push and pull request.
+- **Security-First Approach:** Embedded dependency scanning, CodeQL semantic analysis, and Trivy filesystem scans.
+- **Caching Mechanisms:** NPM dependency caching to drastically reduce CI execution time.
+- **Workflow Summaries:** Clear, easy-to-read graphical step summaries output directly to the GitHub Actions console.
+- **Robust Local Tooling:** Unified `package.json` scripts that exactly mirror the pipeline's remote behavior.
 
-Clone the repository
+## Pipeline Architecture
 
-```bash
-git clone https://github.com/your-username/ai-vs-human-challenge.git
-```
+The CI/CD pipeline consists of modular workflows operating in parallel, providing immediate feedback loop for developers without compromising on thoroughness. It utilizes isolated environments for standard validation (CI) and advanced vulnerability scanning (Security & CodeQL).
 
-Navigate to the project
+## Workflow Explanation
 
-```bash
-cd ai-vs-human-challenge
-```
+### 1. Main CI Workflow (`ci.yml`)
 
-Install dependencies
+- Triggers on `push`, `pull_request`, and `workflow_dispatch`.
+- Steps: Checkout, Node.js Setup, Cache NPM Dependencies, Install Dependencies, Run ESLint, Run Prettier Check, Run Unit Tests & Coverage, Build Project, Validate Documentation, and Upload Build Artifacts.
+
+### 2. Security Workflow (`security.yml`)
+
+- Triggers on `push`, `pull_request`, and via weekly cron job.
+- Includes `npm audit`, Dependency Review (on PRs), and Trivy filesystem scanning for comprehensive threat detection.
+
+### 3. CodeQL Workflow (`codeql.yml`)
+
+- Provides deep semantic code analysis to catch advanced security and architectural flaws in the JavaScript/TypeScript implementation.
+
+## Technologies Used
+
+- **Framework:** React 19 + TypeScript + Vite
+- **CI/CD:** GitHub Actions
+- **Testing:** Vitest & React Testing Library
+- **Linting & Formatting:** ESLint & Prettier
+- **Security:** Trivy, CodeQL, GitHub Dependency Review
+
+## Installation
+
+Clone the repository and install dependencies:
 
 ```bash
+git clone https://github.com/your-username/continuous-integration-pipeline.git
+cd continuous-integration-pipeline
 npm install
 ```
 
-Start the development server
+## Local Development
+
+You can run the same scripts the pipeline uses directly on your machine:
 
 ```bash
-npm run dev
+npm run dev           # Start the local development server
+npm run lint          # Run ESLint validation
+npm run format        # Automatically fix formatting issues
+npm run format:check  # Check formatting without fixing
+npm run test          # Run Vitest test suite
+npm run coverage      # Run tests and generate coverage report
+npm run build         # Build the application for production
 ```
 
-Build for production
+## GitHub Actions Overview
 
-```bash
-npm run build
+All automated workflows are located in the `.github/workflows/` directory. They are designed to operate completely hands-off. Whenever a pull request is created against the `main` branch, the pipelines trigger simultaneously to provide immediate feedback. The workflow prevents merging if any step (Lint, Test, Build, or Security) fails.
+
+## Security Scanning
+
+Security is treated as a first-class citizen in this pipeline. The Trivy scanner evaluates the filesystem for secrets and CVEs, while the built-in `npm audit` and Dependency Review block PRs introducing vulnerable transitive dependencies.
+
+## Testing
+
+Unit tests are written using Vitest and React Testing Library. The tests verify component rendering, DOM state, and basic interactions. Run them locally using `npm run test`. The pipeline automatically executes them and uploads a coverage report artifact upon completion.
+
+## Folder Structure
+
+```text
+.github/
+└── workflows/
+    ├── ci.yml
+    ├── codeql.yml
+    └── security.yml
+src/
+├── components/
+├── context/
+├── data/
+├── types/
+├── utils/
+├── App.tsx
+├── App.test.tsx
+└── main.tsx
 ```
 
-Preview production build
+## Screenshots
 
-```bash
-npm run preview
-```
+_(Placeholder for future screenshots of the GitHub Actions dashboard and local application)_
 
-## 🎮 Gameplay
+## Future Improvements
 
-1. Start a new game.
-2. Select a game mode and difficulty.
-3. Analyze the displayed content.
-4. Guess whether it was created by a Human or an AI.
-5. View the correct answer along with an explanation.
-6. Continue until all rounds are completed.
-7. Check your final score and leaderboard ranking.
-
-## 🏆 Scoring
-
-- Correct Answer → +10 points
-- Difficulty Bonus
-  - Easy → +5
-  - Medium → +10
-  - Hard → +20
-
-Statistics tracked include:
-
-- Total Score
-- Accuracy
-- Current Streak
-- Best Streak
-- Correct Answers
-- Incorrect Answers
-
-## 💾 Data Persistence
-
-The application uses LocalStorage to save:
-
-- Leaderboard
-- Player statistics
-- Best score
-- Theme preference
-- User settings
-
-## ✨ Highlights
-
-- Modern responsive interface
-- Smooth animations
-- Randomized question order
-- No repeated questions during a game
-- Instant feedback after each answer
-- Accessible and mobile-friendly design
-
-## 🔮 Future Enhancements
-
-- Multiplayer mode
-- Global online leaderboard
-- AI-generated daily challenges
-- User-submitted questions
-- Additional content categories
-- Adaptive difficulty based on player performance
+- Add End-to-End (E2E) testing with Playwright or Cypress.
+- Integrate automated release tagging and semantic versioning.
+- Add deployment workflows to platforms like Vercel, Netlify, or AWS.
+- Implement Lighthouse CI for automated performance auditing.

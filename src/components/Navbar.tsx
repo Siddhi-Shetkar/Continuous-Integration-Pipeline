@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { useGame } from '../context/GameContext';
-import { Bot, Moon, Sun, Settings, BarChart2, LogOut } from 'lucide-react';
+import React, { useState } from 'react'
+import { useGame } from '../context/GameContext'
+import { Bot, Moon, Sun, Settings, BarChart2, LogOut } from 'lucide-react'
 
 export const Navbar: React.FC = () => {
-  const { settings, updateSettings, gameState, exitGame } = useGame();
-  const [showExitModal, setShowExitModal] = useState(false);
+  const { settings, updateSettings, gameState, exitGame } = useGame()
+  const [showExitModal, setShowExitModal] = useState(false)
 
   const toggleDarkMode = () => {
-    updateSettings({ darkMode: !settings.darkMode });
-    document.documentElement.classList.toggle('dark');
-  };
+    updateSettings({ darkMode: !settings.darkMode })
+    document.documentElement.classList.toggle('dark')
+  }
 
   const handleExitConfirm = () => {
-    setShowExitModal(false);
-    exitGame();
-  };
+    setShowExitModal(false)
+    exitGame()
+  }
 
-  const isGameActive = gameState === 'playing' || gameState === 'revealed';
+  const isGameActive = gameState === 'playing' || gameState === 'revealed'
 
   return (
     <>
@@ -36,15 +36,15 @@ export const Navbar: React.FC = () => {
               <BarChart2 size={24} />
             </button>
           )}
-          <button 
+          <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full hover:bg-foreground/10 transition-colors"
           >
             {settings.darkMode ? <Sun size={24} /> : <Moon size={24} />}
           </button>
-          
+
           {isGameActive ? (
-            <button 
+            <button
               onClick={() => setShowExitModal(true)}
               className="p-2 rounded-full hover:bg-red-500/20 text-red-500 transition-colors"
               title="Exit Game"
@@ -65,16 +65,17 @@ export const Navbar: React.FC = () => {
           <div className="bg-background border border-border p-8 rounded-3xl max-w-sm w-full shadow-2xl text-center">
             <h3 className="text-2xl font-bold mb-4">Exit Game?</h3>
             <p className="text-muted-foreground mb-8">
-              Are you sure you want to exit the current game? Your progress will be lost.
+              Are you sure you want to exit the current game? Your progress will
+              be lost.
             </p>
             <div className="flex gap-4">
-              <button 
+              <button
                 onClick={() => setShowExitModal(false)}
                 className="flex-1 py-3 rounded-xl bg-foreground/10 hover:bg-foreground/20 font-bold transition-colors"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleExitConfirm}
                 className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition-colors"
               >
@@ -85,5 +86,5 @@ export const Navbar: React.FC = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}

@@ -1,0 +1,82 @@
+name: Security Scanning
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: '0 0 * * 0' # Weekly
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-scans:
+    name: Security Scans
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        id: install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: NPM Audit
+        id: npm-audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run Trivy vulnerability scanner
+        id: trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+      - name: Gitleaks Secret Scanning
+        id: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Dependency Review
+        if: github.event_name == 'pull_request'
+        id: dep-review
+        uses: actions/dependency-review-action@v4
+
+      - name: Outdated Packages Check
+        id: outdated
+        run: npm outdated || true
+
+      - name: Security Summary
+        if: always()
+        run: |
+          echo "## Security Scan Summary 🛡️" >> $GITHUB_STEP_SUMMARY
+          echo "- NPM Audit Status: ${{ steps.npm-audit.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Trivy Scan Status: ${{ steps.trivy.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "- Dependency Review Status: ${{ steps.dep-review.outcome == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          fi
