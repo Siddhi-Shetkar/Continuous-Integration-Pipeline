@@ -1,5 +1,5 @@
 {
-  "name": "human-vs-ai-detector-game",
+  "name": "continuous-integration-pipeline",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,13 +14,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "framer-motion": "^12.42.2",
-    "lucide-react": "^1.24.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "recharts": "^3.9.2",
-    "tailwind-merge": "^3.6.0"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.1",
